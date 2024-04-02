@@ -15,3 +15,34 @@ VALUES
     ('Art Exhibition', '2023-09-10', 'Art Gallery', 10.00),
     ('Sports Tournament', '2023-10-05', 'Stadium', 35.00),
     ('Holiday Gala', '2023-12-20', 'Grand Hotel', 75.00);
+
+
+SELECT *
+FROM Events
+
+WITH EventGaps AS (
+    SELECT 
+    E1.EventDate AS Event1,
+    E2.EventDate AS Event2,
+    julianday(E2.EventDate) - julianday(E1.EventDate) AS Gapdays
+FROM
+    Events E1
+    JOIN
+    Events E2 ON E1.EventDate < E2.EventDate
+)
+SELECT
+Event1,
+Event2,
+MAX(GapDays) AS LongestGap
+FROM
+EventGaps
+
+
+SELECT 
+    E1.EventDate AS Event1,
+    E2.EventDate AS Event2,
+    DATEDIFF(E2.EventDate, E1.EventDate) AS Gapdays
+FROM
+    Events E1
+    JOIN
+    Events E2 ON E1.EventDate < E2.EventDate;
