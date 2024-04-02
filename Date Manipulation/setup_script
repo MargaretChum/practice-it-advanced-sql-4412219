@@ -16,14 +16,18 @@ VALUES
     ('Sports Tournament', '2023-10-05', 'Stadium', 35.00),
     ('Holiday Gala', '2023-12-20', 'Grand Hotel', 75.00);
 
+INSERT INTO Events (EventName, EventDate, EventLocation, TicketPrice)
+VALUES
+    ('Concert in the Sea', '2023-07-18', 'Sea Park', 30.00);
+
 
 SELECT *
 FROM Events
 
 WITH EventGaps AS (
     SELECT 
-    E1.EventDate AS Event1,
-    E2.EventDate AS Event2,
+    E1.EventName AS Event1,
+    E2.EventName AS Event2,
     julianday(E2.EventDate) - julianday(E1.EventDate) AS Gapdays
 FROM
     Events E1
@@ -46,3 +50,11 @@ FROM
     Events E1
     JOIN
     Events E2 ON E1.EventDate < E2.EventDate;
+
+
+SELECT
+STRFTIME ('%Y - %m', EventDate) AS MonthYear,
+SUM(TicketPrice) AS TotalReveneue
+FROM Events
+GROUP BY MonthYear
+ORDER BY MonthYear
