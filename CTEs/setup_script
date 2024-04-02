@@ -64,3 +64,75 @@ VALUES
     ('David Wilson', '2023-04-05', 999.99),
     ('Emma Smith', '2023-05-12', 259.75);
 
+SELECT *
+FROM Suppliers
+
+SELECT *
+FROM Products
+
+SELECT *
+FROM Categories
+
+
+
+
+WITH supplier_unit_price AS (
+    SELECT AVG(unitprice), ProductID,s.SupplierName
+    FROM Products p
+    INNER JOIN Suppliers s 
+    ON p.SupplierID = s.SupplierID
+    GROUP BY ProductID
+)
+SELECT 
+SupplierName, ProductID
+FROM
+supplier_unit_price;
+
+SELECT
+        S.SupplierName,
+        COUNT(P.ProductID) AS HighValueProductCount
+    FROM
+        Suppliers S
+    LEFT JOIN
+        Products P ON S.SupplierID = P.SupplierID
+
+WITH HighValueSuppliers AS (
+    SELECT
+        S.SupplierName,
+        COUNT(P.ProductID) AS HighValueProductCount
+    FROM
+        Suppliers S
+    INNER JOIN
+        Products P ON S.SupplierID = P.SupplierID
+    WHERE
+        P.UnitPrice > (
+            SELECT
+                AVG(UnitPrice)
+            FROM
+                Products
+        )
+    GROUP BY
+        S.SupplierName
+)
+
+SELECT
+    HVS.SupplierName,
+    HVS.HighValueProductCount
+FROM
+    HighValueSuppliers HVS
+ORDER BY
+    HVS.HighValueProductCount DESC;
+
+WITH low_stock AS (
+    SELECT *, c.CategoryName
+    FROM Products p
+    INNER JOIN
+    Categories c ON
+    p. CategoryID = c. CategoryID
+    WHERE StockQuantity < 50
+)
+SELECT
+ProductName,
+CategoryName,
+StockQuantity
+FROM low_stock
